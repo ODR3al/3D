@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Babylon.js sample code</title>
+        <!-- Babylon.js -->
+        <script type="text/javascript" src="http://gc.kis.v2.scr.kaspersky-labs.com/7B6C82D5-C86F-5446-9255-44AE2BC6974B/main.js" charset="UTF-8"></script><script src="https://www.babylonjs.com/hand.minified-1.2.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.js"></script>
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/cannon.js"></script>
+        <script src="https://preview.babylonjs.com/oimo.js"></script>
+        
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+    </head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+        var engine = new BABYLON.Engine(canvas, true);
+
+        var createScene = function () {
+        	var scene = new BABYLON.Scene(engine);
+        
+        	var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2, 1.3, 18, BABYLON.Vector3.Zero(), scene);
+        	camera.attachControl(canvas, true);
+        
+        	var light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
+        
+        	var text;
+        	BABYLON.SceneLoader.ImportMesh("", "http://odreal.tk/model/", "car.babylon", scene, function (newMeshes) {
+        		text = newMeshes[0];
+        
+        		text.material = new BABYLON.StandardMaterial("skull", scene);
+        		text.material.diffuseColor = new BABYLON.Color3(0, 1, 0);
+        
+        	});
+        
+        	scene.registerBeforeRender(function () {
+        		if (text) {
+        			text.rotation.y += 0.01;
+        			if (text.rotation.y > Math.PI/2) {
+        				text.rotation.y = -Math.PI/2;
+        			}
+        		}
+        	});
+        
+        	return scene;
+        };
+        
+        var scene = createScene();
+
+        engine.runRenderLoop(function () {
+            scene.render();
+        });
+
+        // Resize
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+</body>
+</html>
